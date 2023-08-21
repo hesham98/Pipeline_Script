@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'windows_node'
+    }
     stages {
         
         stage('Clone code from github') {
