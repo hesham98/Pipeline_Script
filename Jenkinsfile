@@ -1,36 +1,35 @@
 pipeline {
-    agent none
+    agent any
     stages {
-	
-	stage('Non-Parallel Stage') {
-	    agent {
-                        label "master"
-                }
-        steps {
-                echo 'This stage will be executed first'
-                }
+        
+        stage('Clone code from github') {
+            steps {
+                    echo 'Checking out my code from github'
+                    git credentialsId: '8fcad28a-cbcf-4b23-a576-daf918fe1e79', url: 'https://github.com/hesham98/Pipeline_Script.git'
+            }
         }
-
-	
-        stage('Run Tests') {
-            parallel {
-                stage('Test On Windows') {
-                    agent {
-                        label "Windows_Node"
-                    }
-                    steps {
-                        echo "Task1 on Agent"
-                    }
-                    
-                }
-                stage('Test On Master') {
-                    agent {
-                        label "master"
-                    }
-                    steps {
-						echo "Task1 on Master"
-					}
-                }
+        stage('build stage') {
+            steps {
+                    echo 'Building the checking out code'
+                    bat 'Build.bat'
+            }
+        }
+        stage('Unit test stage') {
+            steps {
+                    echo 'Running unit test on the checking out code'
+                    bat 'Unit.bat'
+            }
+        }
+        stage('Quality stage') {
+            steps {
+                    echo 'Verifying the quality'
+                    bat 'Quality.bat'
+            }
+        }
+        stage('Deploy stage') {
+            steps {
+                    echo 'Deploying the checking out code'
+                    bat 'Deploy.bat'
             }
         }
     }
